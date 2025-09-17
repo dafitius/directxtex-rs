@@ -91,9 +91,10 @@ fn build_tex() {
 
     if cfg!(feature = "openmp") {
         if cfg!(target_os = "macos") {
+            let libomp_prefix = homebrew_prefix_path("libomp");
             build.flag("-Xpreprocessor");
             build.flag("-fopenmp");
-            build.flag("-lomp");
+            build.include(format!("{}/include", libomp_prefix));
         } else {
             build.flag("-fopenmp");
         }
@@ -118,4 +119,15 @@ fn main() {
     build_ffi();
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=ffi/main.cpp");
+}
+
+#[cfg(target_os = "macos")]
+fn homebrew_prefix_path(library: &str) -> String {
+    std::process::Command::new("brew")
+                .args(&["--prefix", library])
+                .output()
+                .ok()
+                .and_then(|o| String::from_utf8(o.stdout).ok())
+                .map(|s| s.trim().to_string())
+                .unwrap_or_else(|| "/usr/local".to_string())
 }
