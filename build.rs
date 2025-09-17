@@ -1,7 +1,7 @@
 #![warn(clippy::pedantic)]
 
 use cc::Build;
-use std::path::Path;
+use std::{env, path::Path};
 
 fn make_standard_build() -> Build {
     let mut build = Build::new();
@@ -90,14 +90,11 @@ fn build_tex() {
     }
 
     if cfg!(feature = "openmp") {
+        env::var("DEP_OPENMP_FLAG").unwrap().split(" ").for_each(|f| { build.flag(f); });
         if cfg!(target_os = "macos") {
             let libomp_prefix = homebrew_prefix_path("libomp");
-            build.flag("-Xpreprocessor");
-            build.flag("-fopenmp");
             build.include(format!("{libomp_prefix}/include"));
-        } else {
-            build.flag("-fopenmp");
-        }
+        }    
     }
 
     build.compile("DirectXTex");
