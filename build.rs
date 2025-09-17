@@ -89,9 +89,14 @@ fn build_tex() {
             .object("Ole32.lib");
     }
 
-    if cfg!(feature = "openmp")
-    {
-        build.flag("-fopenmp");
+    if cfg!(feature = "openmp") {
+        if cfg!(target_os = "macos") {
+            build.flag("-Xpreprocessor");
+            build.flag("-fopenmp");
+            build.flag("-lomp");
+        } else {
+            build.flag("-fopenmp");
+        }
     }
 
     build.compile("DirectXTex");
