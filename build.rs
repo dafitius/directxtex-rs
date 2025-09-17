@@ -90,7 +90,7 @@ fn build_tex() {
     }
 
     if cfg!(feature = "openmp") {
-        env::var("DEP_OPENMP_FLAG").unwrap().split(" ").for_each(|f| { build.flag(f); });
+        env::var("DEP_OPENMP_FLAG").unwrap().split(' ').for_each(|f| { build.flag(f); });
         if cfg!(target_os = "macos") {
             let libomp_prefix = homebrew_prefix_path("libomp");
             build.include(format!("{libomp_prefix}/include"));
