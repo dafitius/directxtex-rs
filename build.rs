@@ -94,7 +94,7 @@ fn build_tex() {
             let libomp_prefix = homebrew_prefix_path("libomp");
             build.flag("-Xpreprocessor");
             build.flag("-fopenmp");
-            build.include(format!("{}/include", libomp_prefix));
+            build.include(format!("{libomp_prefix}/include"));
         } else {
             build.flag("-fopenmp");
         }
@@ -122,7 +122,7 @@ fn main() {
 }
 
 #[cfg(not(target_os = "macos"))]
-fn homebrew_prefix_path(library: &str) -> String {
+fn homebrew_prefix_path(_library: &str) -> String {
     println!("cargo:warning=homebrew_prefix_path is only supported on macOS");
     String::new()
 }
