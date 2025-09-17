@@ -89,6 +89,11 @@ fn build_tex() {
             .object("Ole32.lib");
     }
 
+    if cfg!(feature = "openmp")
+    {
+        build.flag("-fopenmp");
+    }
+
     build.compile("DirectXTex");
 }
 
