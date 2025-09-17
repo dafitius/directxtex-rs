@@ -130,10 +130,9 @@ fn homebrew_prefix_path(_library: &str) -> String {
 #[cfg(target_os = "macos")]
 fn homebrew_prefix_path(library: &str) -> String {
     std::process::Command::new("brew")
-                .args(&["--prefix", library])
-                .output()
-                .ok()
-                .and_then(|o| String::from_utf8(o.stdout).ok())
-                .map(|s| s.trim().to_string())
-                .unwrap_or_else(|| "/usr/local".to_string())
+        .args(["--prefix", library])
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .map_or_else(|| "/usr/local".to_string(), |s| s.trim().to_string())
 }
