@@ -124,6 +124,7 @@ fn main() {
 #[cfg(not(target_os = "macos"))]
 fn homebrew_prefix_path(library: &str) -> String {
     println!("cargo:warning=homebrew_prefix_path is only supported on macOS");
+    String::new()
 }
 
 #[cfg(target_os = "macos")]
