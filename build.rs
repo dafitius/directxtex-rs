@@ -102,8 +102,8 @@ fn build_tex() {
             println!("cargo:warning=libomp prefix path: {libomp_prefix}");
             build.include(format!("{libomp_prefix}/include"));
             
-            println!("cargo:link-search=native={libomp_prefix}/lib");
-            println!("cargo:link-lib=static=omp");
+            println!("cargo:rustc-link-search=native={libomp_prefix}/lib");
+            println!("cargo:rustc-link-lib=static=omp");
         }
     }
 
