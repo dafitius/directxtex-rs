@@ -57,7 +57,7 @@ checksum = "7fd99930f64d146689264c637b5af2f0233a933bef0d8570e2526bf9e083192d"
 [[package]]
 name = "openmp-sys"
 version = "1.2.3"
-source = "git+https://gitlab.com/dafitius/openmp-rs/#476e069ad50f6a45799df310381d62dcc9f38414"
+source = "git+https://gitlab.com/dafitius/openmp-rs/#b1946d4468722ccf68027b50469e6a50864a4b8b"
 dependencies = [
  "cc",
 ]
