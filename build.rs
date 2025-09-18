@@ -1,7 +1,7 @@
 #![warn(clippy::pedantic)]
 
 use cc::Build;
-use std::path::Path;
+use std::{env, path::Path};
 
 fn make_standard_build() -> Build {
     let mut build = Build::new();
@@ -89,12 +89,24 @@ fn build_tex() {
             .object("Ole32.lib");
     }
 
-    if cfg!(feature = "openmp")
-    {
-        build.flag("-fopenmp");
+    if cfg!(feature = "openmp") {
+        env::var("DEP_OPENMP_FLAG")
+            .unwrap()
+            .split(' ')
+            .for_each(|f| {
+                build.flag(f);
+            });
     }
 
     build.compile("DirectXTex");
+
+    if cfg!(feature = "openmp") {
+        if let Some(link) = env::var_os("DEP_OPENMP_CARGO_LINK_INSTRUCTIONS") {
+            for i in env::split_paths(&link).filter(|link| !link.as_os_str().is_empty()) {
+                println!("cargo:{}", i.display());
+            }
+        }
+    }
 }
 
 fn build_ffi() {
