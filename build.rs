@@ -96,6 +96,13 @@ fn build_tex() {
             .for_each(|f| {
                 build.flag(f);
             });
+        env::var("DEP_OPENMP_INCLUDE")
+            .unwrap()
+            .split(';')
+            .map(Path::new)
+            .for_each(|f| {
+                build.include(f);
+            });
     }
 
     build.compile("DirectXTex");
