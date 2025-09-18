@@ -99,6 +99,7 @@ fn build_tex() {
         if cfg!(target_os = "macos") {
             let libomp_prefix = homebrew_prefix_path("libomp");
             build.include(format!("{libomp_prefix}/include"));
+            println!("cargo:rustc-link-lib=static=omp");
         }
     }
 
@@ -106,7 +107,7 @@ fn build_tex() {
 
     if cfg!(feature = "openmp") {
         if let Some(link) = env::var_os("DEP_OPENMP_CARGO_LINK_INSTRUCTIONS") {
-            for i in env::split_paths(&link).filter(|link| link.exists()) {
+            for i in env::split_paths(&link).filter(|link| !link.as_os_str().is_empty()) {
                 println!("cargo:{}", i.display());
             }
         }
