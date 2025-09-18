@@ -90,19 +90,19 @@ fn build_tex() {
     }
 
     if cfg!(feature = "openmp") {
-        env::var("DEP_OPENMP_FLAG")
-            .unwrap()
+        if let Ok(flags) = env::var("DEP_OPENMP_FLAG"){
+            flags
             .split(' ')
             .for_each(|f| {
                 build.flag(f);
             });
-        env::var("DEP_OPENMP_INCLUDE")
-            .unwrap()
-            .split(';')
-            .map(Path::new)
-            .for_each(|f| {
+        }
+      
+        if let Some(includes) = env::var_os("DEP_OPENMP_INCLUDE"){
+            for f in env::split_paths(&includes).filter(|include| !include.as_os_str().is_empty()) {
                 build.include(f);
-            });
+            }
+        }
     }
 
     build.compile("DirectXTex");
