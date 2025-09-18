@@ -106,7 +106,7 @@ fn build_tex() {
 
     if cfg!(feature = "openmp") {
         if let Some(link) = env::var_os("DEP_OPENMP_CARGO_LINK_INSTRUCTIONS") {
-            for i in env::split_paths(&link) {
+            for i in env::split_paths(&link).filter(|link| link.exists()) {
                 println!("cargo:{}", i.display());
             }
         }
