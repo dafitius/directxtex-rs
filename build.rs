@@ -101,6 +101,9 @@ fn build_tex() {
             let libomp_prefix = homebrew_prefix_path("libomp");
             println!("cargo:warning=libomp prefix path: {libomp_prefix}");
             build.include(format!("{libomp_prefix}/include"));
+            
+            println!("cargo:link-search=native={libomp_prefix}/lib");
+            println!("cargo:link-lib=static=omp");
         }
     }
 
