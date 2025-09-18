@@ -31,9 +31,9 @@ jobs:
       - name: Clippy
         run: cargo clippy -- -Dwarnings
       - name: Build
-        run: cargo build
+        run: cargo build 
       - name: Build with features
-        run: cargo build --all-features
+        run: cargo build -vv --all-features
       - name: Run tests
         run: cargo test
       - name: Run tests with features
