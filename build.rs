@@ -94,10 +94,12 @@ fn build_tex() {
             .unwrap()
             .split(' ')
             .for_each(|f| {
+                println!("cargo:warning=libomp flag: {}", f);
                 build.flag(f);
             });
         if cfg!(target_os = "macos") {
             let libomp_prefix = homebrew_prefix_path("libomp");
+            println!("cargo:warning=libomp prefix path: {}", libomp_prefix);
             build.include(format!("{libomp_prefix}/include"));
         }
     }
@@ -107,6 +109,7 @@ fn build_tex() {
     if cfg!(feature = "openmp") {
         if let Some(link) = env::var_os("DEP_OPENMP_CARGO_LINK_INSTRUCTIONS") {
             for i in env::split_paths(&link).filter(|link| !link.as_os_str().is_empty()) {
+                println!("cargo:warning=libomp link: {}", i.display());
                 println!("cargo:{}", i.display());
             }
         }
