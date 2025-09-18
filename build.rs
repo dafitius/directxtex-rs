@@ -94,12 +94,12 @@ fn build_tex() {
             .unwrap()
             .split(' ')
             .for_each(|f| {
-                println!("cargo:warning=libomp flag: {}", f);
+                println!("cargo:warning=libomp flag: {f}");
                 build.flag(f);
             });
         if cfg!(target_os = "macos") {
             let libomp_prefix = homebrew_prefix_path("libomp");
-            println!("cargo:warning=libomp prefix path: {}", libomp_prefix);
+            println!("cargo:warning=libomp prefix path: {libomp_prefix}");
             build.include(format!("{libomp_prefix}/include"));
         }
     }
