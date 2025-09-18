@@ -27,7 +27,7 @@ jobs:
       - name: Set libomp env vars (macOS only)
         if: runner.os == 'macOS'
         run: |
-          echo "LIBRARY_PATH=${LIBRARY_PATH:+$LIBRARY_PATH }-L/opt/homebrew/opt/libomp/lib" >> $GITHUB_ENV
+          echo "LIBRARY_PATH=${LIBRARY_PATH:+$LIBRARY_PATH }/opt/homebrew/opt/libomp/lib" >> $GITHUB_ENV
       - name: Nightly
         run: |
           rustup toolchain install nightly --component clippy
