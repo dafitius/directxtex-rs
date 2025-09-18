@@ -96,10 +96,6 @@ fn build_tex() {
             .for_each(|f| {
                 build.flag(f);
             });
-        // if cfg!(target_os = "macos") {
-        //     let libomp_prefix = homebrew_prefix_path("libomp");
-        //     build.include(format!("{libomp_prefix}/include"));
-        // }
     }
 
     build.compile("DirectXTex");
@@ -129,20 +125,4 @@ fn main() {
     build_ffi();
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=ffi/main.cpp");
-}
-
-#[cfg(not(target_os = "macos"))]
-fn homebrew_prefix_path(_library: &str) -> String {
-    println!("cargo:warning=homebrew_prefix_path is only supported on macOS");
-    String::new()
-}
-
-#[cfg(target_os = "macos")]
-fn homebrew_prefix_path(library: &str) -> String {
-    std::process::Command::new("brew")
-        .args(["--prefix", library])
-        .output()
-        .ok()
-        .and_then(|o| String::from_utf8(o.stdout).ok())
-        .map_or_else(|| "/usr/local".to_string(), |s| s.trim().to_string())
 }
