@@ -99,7 +99,6 @@ fn build_tex() {
         if cfg!(target_os = "macos") {
             let libomp_prefix = homebrew_prefix_path("libomp");
             build.include(format!("{libomp_prefix}/include"));
-            println!("cargo:rustc-link-lib=static=omp");
         }
     }
 
