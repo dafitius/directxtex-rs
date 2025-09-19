@@ -127,6 +127,9 @@ mod rect;
 mod scratch_image;
 mod texture_metadata;
 
+#[cfg(feature = "d3d11")]
+mod d3d11;
+
 pub use self::{
     blob::Blob,
     constants::{

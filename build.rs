@@ -97,6 +97,7 @@ fn build_ffi() {
     let mut build = make_standard_build();
     build.file(root.join("main.cpp")).include(root);
     if cfg!(windows) {
+        build.file(root.join("d3d11.cpp"));
         build.define("CONFIG_WINDOWS", "1");
     }
     build.compile("directxtex-ffi");

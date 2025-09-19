@@ -8,6 +8,10 @@ use core::{
     slice,
 };
 
+#[cfg(all(windows, feature = "d3d11"))]
+use windows::Win32::Graphics::Direct3D11::ID3D11Device;
+
+
 pub(crate) mod prelude {
     pub(crate) use super::OptionExt as _;
     pub(crate) use super::SliceExt as _;
@@ -524,5 +528,27 @@ unsafe extern "C" {
         pDestination: *mut u8,
         maxsize: usize,
         required: MutNonNull<usize>,
+    ) -> HResult;
+
+    #[cfg(all(windows, feature = "d3d11"))]
+    pub(crate) unsafe fn DirectXTexFFI_CompressD3D11_1(
+        device: MutNonNull<ID3D11Device>,
+        srcImage: ConstNonNull<Image>,
+        format: DXGI_FORMAT,
+        compress: TEX_COMPRESS_FLAGS,
+        threshold: f32,
+        cimage: MutNonNull<ScratchImage>, 
+    ) -> HResult;
+
+    #[cfg(all(windows, feature = "d3d11"))]
+    pub(crate) unsafe fn DirectXTexFFI_CompressD3D11_2(
+        device: MutNonNull<ID3D11Device>,
+        srcImages: ConstNonNull<Image>,
+        nimages: usize,
+        metadata: ConstNonNull<TexMetadata>,
+        format: DXGI_FORMAT,
+        compress: TEX_COMPRESS_FLAGS,
+        threshold: f32,
+        cimages: MutNonNull<ScratchImage>,
     ) -> HResult;
 }
