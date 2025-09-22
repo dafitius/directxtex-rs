@@ -15,7 +15,7 @@ extern "C"
 	// D3D11 Compression functions
 
     HRESULT FFI(CompressD3D11_1)(
-		ID3D11Device* pDevice
+		ID3D11Device* pDevice,
 		const DirectX::Image* srcImage,
 		DXGI_FORMAT format,
 		DirectX::TEX_COMPRESS_FLAGS compress,
@@ -29,7 +29,7 @@ extern "C"
 	}
 
 	HRESULT FFI(CompressD3D11_2)(
-		ID3D11Device* pDevice
+		ID3D11Device* pDevice,
 		const DirectX::Image* srcImages,
 		size_t nimages,
 		const DirectX::TexMetadata* metadata,

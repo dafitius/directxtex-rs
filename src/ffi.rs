@@ -543,7 +543,7 @@ unsafe extern "C" {
     #[cfg(all(windows, feature = "d3d11"))]
     pub(crate) unsafe fn DirectXTexFFI_CompressD3D11_2(
         device: MutNonNull<ID3D11Device>,
-        srcImages: ConstNonNull<Image>,
+        srcImages: *const Image,
         nimages: usize,
         metadata: ConstNonNull<TexMetadata>,
         format: DXGI_FORMAT,

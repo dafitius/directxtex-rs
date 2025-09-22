@@ -4,6 +4,9 @@ use crate::{
     TEX_COMPRESS_FLAGS, TEX_FILTER_FLAGS, TEX_PMALPHA_FLAGS,
 };
 
+#[cfg(all(feature = "d3d11"))]
+use crate::d3d11::D3D11Device;
+
 pub fn save_dds(images: &[Image], metadata: &TexMetadata, flags: DDS_FLAGS) -> Result<Blob> {
     let mut result = Blob::default();
     let hr = unsafe {
@@ -188,6 +191,31 @@ pub fn compress(
     let mut result = ScratchImage::default();
     let hr = unsafe {
         ffi::DirectXTexFFI_Compress2(
+            images.as_ffi_ptr(),
+            images.len(),
+            metadata.into(),
+            format,
+            compress,
+            threshold,
+            (&mut result).into(),
+        )
+    };
+    hr.success(result)
+}
+
+#[cfg(all(feature = "d3d11"))]
+pub fn compress_d3d11(
+    device: &mut D3D11Device,
+    images: &[Image],
+    metadata: &TexMetadata,
+    format: DXGI_FORMAT,
+    compress: TEX_COMPRESS_FLAGS,
+    threshold: f32,
+) -> Result<ScratchImage> {
+    let mut result = ScratchImage::default();
+    let hr = unsafe {
+        ffi::DirectXTexFFI_CompressD3D11_2(
+            device.as_ffi_ptr().unwrap(),
             images.as_ffi_ptr(),
             images.len(),
             metadata.into(),

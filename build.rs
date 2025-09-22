@@ -87,6 +87,18 @@ fn build_tex() {
                 .map(|x| root.join(x)),
             )
             .object("Ole32.lib");
+
+        if cfg!(feature = "d3d11") {
+            build
+                .files(
+                [
+                    "DirectXTex/BCDirectCompute.cpp",
+                    "DirectXTex/DirectXTexCompressGPU.cpp",
+                    "DirectXTex/DirectXTexD3D11.cpp"
+                ].into_iter()
+                .map(|x| root.join(x))
+            );
+        }
     }
 
     build.compile("DirectXTex");
