@@ -56,8 +56,9 @@ checksum = "7fd99930f64d146689264c637b5af2f0233a933bef0d8570e2526bf9e083192d"
 
 [[package]]
 name = "openmp-sys"
-version = "1.2.3"
-source = "git+https://gitlab.com/dafitius/openmp-rs/#908c602045a6f17aca7e2889c832fc30a337eb64"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "caef37114187ab867226e338413fb6cb23ccd785a63d4ee63e7335c88f1079e0"
 dependencies = [
  "cc",
 ]
