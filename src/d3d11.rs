@@ -1,6 +1,11 @@
-use crate::ffi::MutNonNull;
 use crate::{HResultError, Result};
+use crate::hresult::HResult;
+
+#[cfg(windows)]
 use core::ffi::c_void;
+
+#[cfg(windows)]
+use crate::ffi::MutNonNull;
 
 #[cfg(windows)]
 use windows::core::Interface;
@@ -27,7 +32,6 @@ use windows::Win32::Graphics::Direct3D::{
 
 #[cfg(windows)]
 use windows::Win32::Graphics::Direct3D11::D3D11CreateDevice;
-use crate::hresult::HResult;
 
 pub struct D3D11Device {
     #[cfg(windows)]
@@ -41,10 +45,7 @@ impl D3D11Device {
         cfg!(windows)
     }
 
-    pub fn feature_level(&self) -> Option<D3D_FEATURE_LEVEL> {
-        self.device.as_ref().map(|dev| unsafe{ dev.GetFeatureLevel() } )
-    }
-
+    #[allow(clippy::unused_self)]
     pub const fn is_initialized(&self) -> bool {
         #[cfg(windows)]
         {
@@ -55,6 +56,7 @@ impl D3D11Device {
         false
     }
 
+    #[allow(clippy::unused_self)]
     pub fn is_healthy(&self) -> bool {
         #[cfg(windows)]
         unsafe {
@@ -65,15 +67,13 @@ impl D3D11Device {
         false
     }
 
+    #[cfg(windows)]
     pub(crate) fn as_ffi_ptr(&mut self) -> Option<MutNonNull<c_void>> {
-        #[cfg(windows)]
         return self.device.as_mut().map(|dev| {
             unsafe{
                 &mut *dev.as_raw()
             }.into()
         });
-        #[cfg(not(windows))]
-        None
     }
 
     #[cfg(windows)]

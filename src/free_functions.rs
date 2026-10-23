@@ -203,7 +203,7 @@ pub fn compress(
     hr.success(result)
 }
 
-#[cfg(feature = "d3d11")]
+#[cfg(all(windows, feature = "d3d11"))]
 pub fn compress_d3d11(
     device: &mut D3D11Device,
     images: &[Image],
@@ -214,8 +214,7 @@ pub fn compress_d3d11(
 ) -> Result<ScratchImage> {
     let mut result = ScratchImage::default();
 
-    #[cfg(windows)]
-    {
+
         let hr = unsafe {
             ffi::DirectXTexFFI_CompressD3D11_2(
                 device.as_ffi_ptr().unwrap(),
@@ -229,8 +228,17 @@ pub fn compress_d3d11(
             )
         };
         hr.success(result)
-    }
-    #[cfg(not(windows))]
+}
+
+#[cfg(all(not(windows), feature = "d3d11"))]
+pub fn compress_d3d11(
+    _device: &mut D3D11Device,
+    _images: &[Image],
+    _metadata: &TexMetadata,
+    _format: DXGI_FORMAT,
+    _compress: TEX_COMPRESS_FLAGS,
+    _threshold: f32,
+) -> Result<ScratchImage> {
     Err(D3D11Device::not_available_error())
 }
 
