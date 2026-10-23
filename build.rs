@@ -19,7 +19,9 @@ fn make_standard_build() -> Build {
         ]);
 
     if !cfg!(windows) {
-        build.includes(["external/DirectX-Headers/include/wsl/stubs", "ffi/include"]);
+        build
+            .includes(["external/DirectX-Headers/include/wsl/stubs", "ffi/include"])
+            .define("PAL_STDCPP_COMPAT", None);
     }
 
     let tool = build.get_compiler();

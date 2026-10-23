@@ -33,9 +33,8 @@ bitflags = "2.9.4"
 winresult = "0.1.3"
 openmp-sys = {version = "1.3.0", features = ["static"], optional = true}
 
-
 [build-dependencies]
-cc = "1.2.37"
+cc = "1.10.0"
 openmp-sys = {version = "1.3.0", features = ["static"]}
 
 [features]
