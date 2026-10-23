@@ -7,7 +7,7 @@ use core::{
     ptr::{self, NonNull},
     slice,
 };
-
+use std::ffi::c_void;
 #[cfg(all(windows, feature = "d3d11"))]
 use windows::Win32::Graphics::Direct3D11::ID3D11Device;
 
@@ -542,7 +542,7 @@ unsafe extern "C" {
 
     #[cfg(all(windows, feature = "d3d11"))]
     pub(crate) unsafe fn DirectXTexFFI_CompressD3D11_2(
-        device: MutNonNull<ID3D11Device>,
+        device: MutNonNull<c_void>,
         srcImages: *const Image,
         nimages: usize,
         metadata: ConstNonNull<TexMetadata>,

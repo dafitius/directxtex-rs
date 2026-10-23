@@ -1,6 +1,7 @@
 use crate::ffi::MutNonNull;
 use crate::{HResultError, Result};
 use core::{marker::PhantomData, ptr::NonNull};
+use std::ffi::c_void;
 use windows::core::Interface;
 use windows::Win32::Foundation::HMODULE;
 #[cfg(all(windows, feature = "d3d11"))]
@@ -33,6 +34,10 @@ impl D3D11Device {
         cfg!(all(windows, feature = "d3d11"))
     }
 
+    pub fn feature_level(&self) -> Option<D3D_FEATURE_LEVEL> {
+        self.device.as_ref().map(|dev| unsafe{ dev.GetFeatureLevel() } )
+    }
+
     pub const fn is_initialized(&self) -> bool {
         #[cfg(all(windows, feature = "d3d11"))]
         {
@@ -54,9 +59,13 @@ impl D3D11Device {
         }
     }
 
-    pub(crate) fn as_ffi_ptr(&mut self) -> Option<MutNonNull<windows::Win32::Graphics::Direct3D11::ID3D11Device>> {
+    pub(crate) fn as_ffi_ptr(&mut self) -> Option<MutNonNull<c_void>> {
         #[cfg(all(windows, feature = "d3d11"))]
-        return self.device.as_mut().map(|dev| { dev.into() });
+        return self.device.as_mut().map(|dev| {
+            unsafe{
+                &mut *dev.as_raw()
+            }.into()
+        });
         #[cfg(not(all(windows, feature = "d3d11")))]
         return None;
     }
@@ -96,8 +105,8 @@ impl D3D11Device {
     }
 
     #[cfg(not(all(windows, feature = "d3d11")))]
-    pub fn new() -> Self {
-        Self { _pd: PhantomData }
+    pub fn new() -> Result<Self> {
+        Err(HResult::from(0x80004002))
     }
 
 }
