@@ -7,10 +7,6 @@ use core::{
     ptr::{self, NonNull},
     slice,
 };
-use std::ffi::c_void;
-#[cfg(all(windows, feature = "d3d11"))]
-use windows::Win32::Graphics::Direct3D11::ID3D11Device;
-
 
 pub(crate) mod prelude {
     pub(crate) use super::OptionExt as _;
@@ -531,18 +527,8 @@ unsafe extern "C" {
     ) -> HResult;
 
     #[cfg(all(windows, feature = "d3d11"))]
-    pub(crate) unsafe fn DirectXTexFFI_CompressD3D11_1(
-        device: MutNonNull<ID3D11Device>,
-        srcImage: ConstNonNull<Image>,
-        format: DXGI_FORMAT,
-        compress: TEX_COMPRESS_FLAGS,
-        threshold: f32,
-        cimage: MutNonNull<ScratchImage>, 
-    ) -> HResult;
-
-    #[cfg(all(windows, feature = "d3d11"))]
     pub(crate) unsafe fn DirectXTexFFI_CompressD3D11_2(
-        device: MutNonNull<c_void>,
+        device: MutNonNull<core::ffi::c_void>,
         srcImages: *const Image,
         nimages: usize,
         metadata: ConstNonNull<TexMetadata>,

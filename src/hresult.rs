@@ -53,7 +53,7 @@ impl error::Error for HResultError {}
 #[cfg(all(windows, feature = "d3d11"))]
 impl From<windows::core::HRESULT> for HResultError {
     fn from(hr: windows::core::HRESULT) -> Self {
-        HResultError(HResult::from(hr.0.abs() as u32))
+        HResultError(HResult::from(hr.0.abs().cast_unsigned()))
     }
 }
 

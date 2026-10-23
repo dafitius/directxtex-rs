@@ -1,19 +1,22 @@
 use crate::ffi::MutNonNull;
 use crate::{HResultError, Result};
-use core::{marker::PhantomData, ptr::NonNull};
-use std::ffi::c_void;
+use core::ffi::c_void;
+
+#[cfg(windows)]
 use windows::core::Interface;
+
+#[cfg(windows)]
 use windows::Win32::Foundation::HMODULE;
-#[cfg(all(windows, feature = "d3d11"))]
+
+#[cfg(windows)]
 use windows::Win32::Graphics::Direct3D11::{
-    D3D11CreateDevice,
     ID3D11Device,
     D3D11_CREATE_DEVICE_FLAG,
     D3D11_CREATE_DEVICE_DEBUG,
     D3D11_SDK_VERSION,
 };
 
-#[cfg(all(windows, feature = "d3d11"))]
+#[cfg(windows)]
 use windows::Win32::Graphics::Direct3D::{
     D3D_DRIVER_TYPE_HARDWARE,
     D3D_FEATURE_LEVEL,
@@ -22,16 +25,20 @@ use windows::Win32::Graphics::Direct3D::{
     D3D_FEATURE_LEVEL_11_0,
 };
 
+#[cfg(windows)]
+use windows::Win32::Graphics::Direct3D11::D3D11CreateDevice;
+use crate::hresult::HResult;
+
 pub struct D3D11Device {
-    #[cfg(all(windows, feature = "d3d11"))]
+    #[cfg(windows)]
     device: Option<ID3D11Device>,
-    #[cfg(not(all(windows, feature = "d3d11")))]
-    _pd: PhantomData<()>,
+    #[cfg(not(windows))]
+    _pd: core::marker::PhantomData<()>,
 }
 
 impl D3D11Device {
     pub const fn is_available() -> bool {
-        cfg!(all(windows, feature = "d3d11"))
+        cfg!(windows)
     }
 
     pub fn feature_level(&self) -> Option<D3D_FEATURE_LEVEL> {
@@ -39,40 +46,39 @@ impl D3D11Device {
     }
 
     pub const fn is_initialized(&self) -> bool {
-        #[cfg(all(windows, feature = "d3d11"))]
+        #[cfg(windows)]
         {
             self.device.is_some()
         }
 
-        #[cfg(not(all(windows, feature = "d3d11")))]
-        {
-            false
-        }
+        #[cfg(not(windows))]
+        false
     }
 
-    #[cfg(all(windows, feature = "d3d11"))]
     pub fn is_healthy(&self) -> bool {
-        if let Some(dev) = &self.device {
-            unsafe { dev.GetDeviceRemovedReason().is_ok() }
-        } else {
-            false
+        #[cfg(windows)]
+        unsafe {
+            self.device.as_ref().is_some_and(|dev| dev.GetDeviceRemovedReason().is_ok())
         }
+
+        #[cfg(not(windows))]
+        false
     }
 
     pub(crate) fn as_ffi_ptr(&mut self) -> Option<MutNonNull<c_void>> {
-        #[cfg(all(windows, feature = "d3d11"))]
+        #[cfg(windows)]
         return self.device.as_mut().map(|dev| {
             unsafe{
                 &mut *dev.as_raw()
             }.into()
         });
-        #[cfg(not(all(windows, feature = "d3d11")))]
-        return None;
+        #[cfg(not(windows))]
+        None
     }
 
-    #[cfg(all(windows, feature = "d3d11"))]
+    #[cfg(windows)]
     pub fn new() -> Result<Self> {
-        let mut device = std::mem::MaybeUninit::zeroed();
+        let mut device = core::mem::MaybeUninit::zeroed();
 
         let feature_levels: [D3D_FEATURE_LEVEL; 3] = [
             D3D_FEATURE_LEVEL_11_0,
@@ -87,7 +93,7 @@ impl D3D11Device {
         }
 
         let device = unsafe {
-            windows::Win32::Graphics::Direct3D11::D3D11CreateDevice(
+            D3D11CreateDevice(
                 None,
                 D3D_DRIVER_TYPE_HARDWARE,
                 HMODULE::default(),
@@ -104,11 +110,15 @@ impl D3D11Device {
         Ok(Self { device })
     }
 
-    #[cfg(not(all(windows, feature = "d3d11")))]
+    #[cfg(not(windows))]
     pub fn new() -> Result<Self> {
-        Err(HResult::from(0x80004002))
+        Err(Self::not_available_error())
     }
 
+    #[cfg(not(windows))]
+    pub(crate) fn not_available_error() -> HResultError {
+        HResult::from(0x80004002).success(0).err().unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -117,9 +127,15 @@ mod tests {
 
     #[test]
     fn verify_d3d11_device() {
-        assert!(D3D11Device::is_available());
-        let d3d11_device = D3D11Device::new().unwrap();
-        assert!(d3d11_device.is_initialized());
-        assert!(d3d11_device.is_healthy());
+        if cfg!(windows) {
+            assert!(D3D11Device::is_available());
+            let d3d11_device = D3D11Device::new().unwrap();
+            assert!(d3d11_device.is_initialized());
+            assert!(d3d11_device.is_healthy());
+        } else{
+            assert!(!D3D11Device::is_available());
+            assert!(D3D11Device::new().is_err());
+        }
+
     }
 }

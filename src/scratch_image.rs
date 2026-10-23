@@ -5,11 +5,13 @@ use crate::{
 };
 use core::ptr;
 
-#[cfg(all(feature = "d3d11"))]
+#[cfg(feature = "d3d11")]
 use crate::d3d11::D3D11Device;
+
 
 #[derive(Debug)]
 #[repr(C)]
+#[allow(clippy::struct_field_names)]
 pub struct ScratchImage {
     m_nimages: usize,
     m_size: usize,
@@ -376,8 +378,6 @@ impl ScratchImage {
 
 #[cfg(test)]
 mod tests {
-    use crate::TEX_THRESHOLD_DEFAULT;
-use crate::TEX_COMPRESS_FLAGS;
 use crate::{ffi, ScratchImage, DXGI_FORMAT, TEX_ALPHA_MODE, TEX_DIMENSION};
     use core::mem;
     use std::fs;
@@ -487,8 +487,8 @@ use crate::{ffi, ScratchImage, DXGI_FORMAT, TEX_ALPHA_MODE, TEX_DIMENSION};
             .compress_d3d11(
                 &mut gpu,
                 DXGI_FORMAT::DXGI_FORMAT_BC7_UNORM,
-                TEX_COMPRESS_FLAGS::default(),
-                TEX_THRESHOLD_DEFAULT,
+                crate::TEX_COMPRESS_FLAGS::default(),
+                crate::TEX_THRESHOLD_DEFAULT,
             )
             .unwrap();
         let compressed = compressed_scratch_image.save_dds(Default::default()).unwrap();

@@ -36,14 +36,9 @@ fn compile_shaders() -> PathBuf {
     println!("cargo:rerun-if-env-changed=COMPILED_SHADERS");
     println!("cargo:rerun-if-env-changed=USE_PREBUILT_SHADERS");
 
-    let use_prebuilt = env::var("USE_PREBUILT_SHADERS")
-        .map(|value| {
-            matches!(
-                value.trim().to_ascii_lowercase().as_str(),
-                "1" | "true"
-            )
-        })
-        .unwrap_or(false);
+    let use_prebuilt = env::var("USE_PREBUILT_SHADERS").is_ok_and(|value| {
+        matches!(value.trim().to_ascii_lowercase().as_str(), "1" | "true")
+    });
 
     if use_prebuilt {
         return env::var_os("COMPILED_SHADERS").map(PathBuf::from).expect(
@@ -76,7 +71,7 @@ fn compile_shaders() -> PathBuf {
         .current_dir(&shader_dir)
         .env("CompileShadersOutput", &shader_out)
         .status()
-        .expect(&format!("Failed to run {}", script.display()));
+        .unwrap_or_else(|_| panic!("Failed to run {}", script.display()));
 
     assert!(
         status.success(),
