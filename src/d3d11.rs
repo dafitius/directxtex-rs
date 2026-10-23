@@ -1,5 +1,4 @@
 use crate::{HResultError, Result};
-use crate::hresult::HResult;
 
 #[cfg(windows)]
 use core::ffi::c_void;
@@ -117,7 +116,7 @@ impl D3D11Device {
 
     #[cfg(not(windows))]
     pub(crate) fn not_available_error() -> HResultError {
-        HResult::from(0x80004002).success(0).err().unwrap()
+        crate::hresult::HResult::from(0x80004002).success(0).err().unwrap()
     }
 }
 
