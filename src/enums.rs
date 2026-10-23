@@ -299,6 +299,16 @@ macros::c_bits! {
         /// if the output format type is IsSRGB(), then SRGB_OUT is on by default
         TEX_COMPRESS_SRGB_OUT = 0x2000000,
     }
+
+    extra => {
+        TEX_COMPRESS_DEFAULT = TEX_COMPRESS_FLAGS::empty();
+
+        /// if the input format type is IsSRGB(), then SRGB_IN is on by default
+        ///
+        /// if the output format type is IsSRGB(), then SRGB_OUT is on by default
+        TEX_COMPRESS_SRGB = TEX_COMPRESS_FLAGS::TEX_COMPRESS_SRGB_IN
+            .union(TEX_COMPRESS_FLAGS::TEX_COMPRESS_SRGB_OUT);
+    }
 }
 
 #[cfg(feature = "openmp")]
