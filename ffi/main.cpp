@@ -818,4 +818,29 @@ extern "C"
 		assert(required != nullptr);
 		return DirectX::EncodeDDSHeader(*metadata, flags, pDestination, maxsize, *required);
 	}
+
+	//---------------------------------------------------------------------------------
+    	// Image flip/rotate operations
+
+    HRESULT FFI(FlipRotate1)(
+    	const DirectX::Image* srcImage,
+        DirectX::TEX_FR_FLAGS flags,
+        DirectX::ScratchImage* image) noexcept
+    {
+    	assert(srcImage != nullptr);
+    	assert(image != nullptr);
+    	return DirectX::FlipRotate(*srcImage, flags, *image);
+    }
+
+    HRESULT FFI(FlipRotate2)(
+    	const DirectX::Image* srcImages,
+    	size_t nimages,
+        const DirectX::TexMetadata* metadata,
+        DirectX::TEX_FR_FLAGS flags,
+        DirectX::ScratchImage* image) noexcept
+    {
+    	assert(srcImage != nullptr);
+    	assert(image != nullptr);
+    	return DirectX::FlipRotate(*srcImage, nimages, *metadata, flags, *image);
+    }
 }

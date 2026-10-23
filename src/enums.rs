@@ -373,3 +373,14 @@ macros::c_bits! {
         CMSE_DEFAULT = CMSE_FLAGS::empty();
     }
 }
+
+macros::c_enum! {
+    tex_fr_flags::TEX_FR_FLAGs(u32) => {
+        TEX_FR_ROTATE0 = 0x0,
+        TEX_FR_ROTATE90 = 0x1,
+        TEX_FR_ROTATE180 = 0x2,
+        TEX_FR_ROTATE270 = 0x3,
+        TEX_FR_FLIP_HORIZONTAL = 0x08,
+        TEX_FR_FLIP_VERTICAL = 0x10,
+    }
+}
