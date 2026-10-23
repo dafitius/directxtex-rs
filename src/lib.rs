@@ -129,6 +129,8 @@ mod texture_metadata;
 
 #[cfg(feature = "openmp")]
 extern crate openmp_sys;
+#[cfg(feature = "d3d11")]
+mod d3d11;
 
 pub use self::{
     blob::Blob,
