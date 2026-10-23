@@ -151,8 +151,8 @@ fn build_tex() {
                 ]
                 .into_iter()
                 .map(|x| root.join(x)),
-            )
-            .object("Ole32.lib");
+            );
+        println!("cargo:rustc-link-lib=ole32");
 
         if cfg!(feature = "d3d11") {
             let shader_out = compile_shaders();
